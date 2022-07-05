@@ -14,8 +14,18 @@ class FizzBuzz : IEnumerable<string>
     public FizzBuzz()
     {
         rules = AskForRules();
-        Console.Write("Enter maximum number: ");
-        maxNum = int.Parse(Console.ReadLine() ?? string.Empty);
+        
+        // Asks for a maximum number and sanitises
+        var validNumber = false;
+        while (!validNumber)
+        {
+            Console.Write("Enter maximum number: ");
+            if (!int.TryParse(Console.ReadLine(), out maxNum))
+            {
+                Console.WriteLine("Invalid number entered.");
+            }
+            validNumber = true;
+        }
     }
 
     // Asks the user for which rules should be applied in this game
@@ -30,11 +40,28 @@ class FizzBuzz : IEnumerable<string>
         
         if (requestedRuleString == "")
         {
+            Console.WriteLine("Applying all standard rules.");
             return standardRules;
         }
 
         var requestedRules = requestedRuleString.Split(',').Select(int.Parse).ToArray();
-        return standardRules.Where(rule => requestedRules.Contains(rule.Trigger)).ToList();
+        
+        var rulesList = new List<Rule>();
+        foreach (int trigger in requestedRules)
+        {
+            if (standardRules.Select(i => i.Trigger).Contains(trigger))
+            {
+                rulesList.Add(standardRules.Find(i => i.Trigger == trigger));
+            }
+            else
+            {
+                Console.WriteLine($"Rule with trigger {trigger} not found in standard rules list.");
+            }
+        }
+
+        Console.WriteLine($"Applying rules: {string.Join(",", rulesList.Select(i => i.Trigger))}");
+
+        return rulesList;
     }
 
     public IEnumerator<string> GetEnumerator()
@@ -108,7 +135,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        //FizzBuzz.PlayGame();
-        FizzBuzz.PlayOneLineGame();
+        FizzBuzz.PlayGame();
+        //FizzBuzz.PlayOneLineGame();
     }
 }
