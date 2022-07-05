@@ -1,5 +1,7 @@
 ﻿namespace FizzBuzz;
 
+// Base class for Rules
+// A rule is activated when the current number is a multiple of its Trigger value
 abstract class Rule
 {
     public int Trigger { get; }
@@ -9,6 +11,7 @@ abstract class Rule
         Trigger = trigger;
     }
 
+    // Does <number> trigger this rule?
     public bool Test(int number)
     {
         return number % Trigger == 0;
@@ -16,6 +19,7 @@ abstract class Rule
 
     public abstract void Apply(List<string> wordList);
 
+    // A list of the standard rules of the game
     public static List<Rule> GetStandardRules()
     {
         Rule fizz = new PrintRule(3, "Fizz");
@@ -37,9 +41,10 @@ abstract class Rule
     }
 }
 
+// A rule which displays a word (e.g. "Fizz") on a trigger
 class PrintRule : Rule
 {
-    public string Word { get; }
+    private string Word { get; }
     
     public PrintRule(int trigger, string word) : base(trigger)
     {
@@ -52,6 +57,8 @@ class PrintRule : Rule
     }
 }
 
+// A rule which displays a word on its own
+// Removes all previous words, then prints
 class RemoveThenPrintRule : PrintRule
 {
     public RemoveThenPrintRule(int trigger, string word) : base(trigger, word)
@@ -65,9 +72,10 @@ class RemoveThenPrintRule : PrintRule
     }
 }
 
+// Inserts a word before the first word in the list which begins with a given letter
 class InsertBeforeRule : Rule
 {
-    public string Word { get; }
+    private string Word { get; }
     private char LetterToFind { get; }
     
     public InsertBeforeRule(int trigger, string word, char letterToFind) : base(trigger)
@@ -80,7 +88,7 @@ class InsertBeforeRule : Rule
     {
         // Word is inserted immediately before the first word beginning with LetterToFind,
         // or at the end if there are none
-        int index = wordList.FindIndex(x => x[0] == LetterToFind);
+        var index = wordList.FindIndex(x => x[0] == LetterToFind);
         if (index != -1)
         {
             wordList.Insert(index, Word);
@@ -92,11 +100,10 @@ class InsertBeforeRule : Rule
     }
 }
 
+// Rule which reverses the order of words to be printed
 class ReverseRule : Rule
 {
-    public ReverseRule(int trigger) : base(trigger)
-    {
-    }
+    public ReverseRule(int trigger) : base(trigger) {}
 
     public override void Apply(List<string> wordList)
     {
