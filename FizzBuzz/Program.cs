@@ -1,12 +1,13 @@
-﻿using System.Collections;
-
-namespace FizzBuzz
+﻿namespace FizzBuzz
 {
     class Program
     {
         static void Main(string[] args)
         {
-            for (int i = 1; i <= 300; i++)
+            Console.Write("Enter maximum number: ");
+            int maxNum = int.Parse(Console.ReadLine());
+            
+            for (int i = 1; i <= maxNum; i++)
             {
                 bool fizz = i % 3 == 0;
                 bool buzz = i % 5 == 0;
