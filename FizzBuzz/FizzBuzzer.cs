@@ -4,14 +4,14 @@ namespace FizzBuzz;
 
 // Class which implements FizzBuzz game
 // Enumerate an object to generate values
-class FizzBuzzer : IEnumerable<string>
+class FizzBuzz : IEnumerable<string>
 {
     // List of Rule objects to be used in the current game
     private List<Rule> rules;
     // The maximum number to play until
     private int maxNum;
     
-    public FizzBuzzer()
+    public FizzBuzz()
     {
         rules = AskForRules();
         Console.Write("Enter maximum number: ");
@@ -67,17 +67,48 @@ class FizzBuzzer : IEnumerable<string>
     {
         return GetEnumerator();
     }
+
+    public static void PlayGame()
+    {
+        var fizzBuzzer = new FizzBuzz();
+
+        foreach (var value in fizzBuzzer)
+        {
+            Console.WriteLine(value);
+        }
+    }
+
+    public static void PlayOneLineGame()
+    {
+        Console.WriteLine(
+            string.Join('\n', Enumerable.Range(1, 300)
+                .Select(i => (Value: i, Words: ""))
+                .Select(i => i with { Words = (i.Value % 3 == 0) ? i.Words + "Fizz" : i.Words })
+                .Select(i => i with { Words = (i.Value % 5 == 0) ? i.Words + "Buzz" : i.Words })
+                .Select(i => i with { Words = (i.Value % 7 == 0) ? i.Words + "Bang" : i.Words })
+                .Select(i => i with { Words = (i.Value % 11 == 0) ? "Bong" : i.Words })
+                .Select(i => i with { Words = (i.Value % 13 == 0) ? 
+                    i.Words.IndexOf('B') != -1 ? i.Words.Insert(i.Words.IndexOf('B'), "Fezz") : i.Words + "Fezz"
+                    : i.Words })
+                .Select(i => i with
+                {
+                    Words = (i.Value % 17 == 0) ?
+                    string.Join("", Enumerable.Range(0, i.Words.Length / 4)
+                        .Select(j => i.Words.Substring(j * 4, 4))
+                        .ToArray()
+                        .Reverse())
+                    : i.Words
+                })
+                .Select(i => (i.Words == "") ? i.Value.ToString() : i.Words)
+            ));
+    }
 }
 
 class Program
 {
     static void Main(string[] args)
     {
-        var fizzBuzzer = new FizzBuzzer();
-
-        foreach (var value in fizzBuzzer)
-        {
-            Console.WriteLine(value);
-        }
+        //FizzBuzz.PlayGame();
+        FizzBuzz.PlayOneLineGame();
     }
 }
